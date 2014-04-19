@@ -44,9 +44,15 @@
 		    	</div>
 		    </div>
     	</div>
-	    <div>
-    		<audio id="player" controls autoplay name="media" src={{songMap[currentSongId].url}}>
-    		</audio>
+	    <div style="display: flex;">
+            <div style="flex: 1">
+                <audio id="player" controls autoplay name="media" src={{songMap[currentSongId].url}}>
+                </audio>
+            </div>
+            <div style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify; width: 60px;">
+                <div ng-click="playLastSong()">Last</div>
+                <div ng-click="playNextSong()">Next</div>
+            </div>
     	</div>
     	<div class="login-{{showLoginDialog}}">
     		<div style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; background-color: #ffffff; opacity: 0.97; z-index: 1;" ng-click="showLoginDialog = 'hide';"></div>

@@ -1,6 +1,6 @@
 function fmCtrl($scope) {
 	var douban = new Douban(),
-        maxSongNumber = 50;
+        maxSongNumber = 200;
 
 	$scope.channels = [];
     $scope.channelMap = {};
@@ -122,22 +122,33 @@ function fmCtrl($scope) {
 		$scope.getSongs(getCurrentChanel());
 	});
 
-	$scope.playNextSong = function() {
-		$scope.$apply(function() {
-            var nextSong = $scope.songs[$scope.currentSongIndex + 1];
-            if (nextSong) {
-                setCurrentSong(nextSong);
-            } else {
-                $scope.getSongs(getCurrentChanel(), function() {
-                    var nextSong = $scope.songs[$scope.currentSongIndex + 1];
-                    if (nextSong === undefined) {//it happens when the channel has no new song
-                        nextSong = $scope.songs[Math.floor(Math.random() * $scope.songs)];
-                    }
-                    setCurrentSong(nextSong)
-                });
-            }
-		});
-	};
+
+    $scope.playSong = function (index) {
+        var nextSong = $scope.songs[index];
+        if (nextSong) {
+            setCurrentSong(nextSong);
+        } else {
+            $scope.getSongs(getCurrentChanel(), function () {
+                var nextSong = $scope.songs[index];
+                if (nextSong === undefined) {//it happens when the channel has no new song
+                    nextSong = $scope.songs[Math.floor(Math.random() * $scope.songs)];
+                }
+                setCurrentSong(nextSong)
+            });
+        }
+    };
+
+    $scope.playNextSong = function() {
+        $scope.playSong($scope.currentSongIndex + 1);
+    };
+
+    $scope.playLastSong = function() {
+        var index = $scope.currentSongIndex - 1;
+        if (index < 0) {
+            index = $scope.songs.length + index;
+        }
+        $scope.playSong(index);
+    };
 
 	$scope.player = document.getElementById("player");
 	if($scope.player) {
