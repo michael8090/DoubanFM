@@ -112,15 +112,30 @@ function fmCtrl($scope) {
 		}
 	};
 
-	$scope.getChannels(function() {
-        $scope.getSongs(getCurrentChanel());
+    douban.testUserSession(function(isValid) {
+        if (isValid) {
+            $scope.$apply(function() {
+                console.log('yes we logged in');
+                $scope.userName = douban.userName;
+                $scope.showLoginDialog = 'hide';
+                $scope.isLoggedIn = true;
+            });
+        } else {
+            douban.clearUserSession();
+        }
     });
 
-	$scope.$watch("currentChannelId", function() {
-		$scope.songs = [];
-        $scope.songMap = {};
-		$scope.getSongs(getCurrentChanel());
+	$scope.$watch("currentChannelId", function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+            $scope.songs = [];
+            $scope.songMap = {};
+            $scope.getSongs(getCurrentChanel());
+        }
 	});
+
+    $scope.getChannels(function() {
+        $scope.getSongs(getCurrentChanel());
+    });
 
 
     $scope.playSong = function (index) {

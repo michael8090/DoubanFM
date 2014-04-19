@@ -1,15 +1,16 @@
 (function () {
-	function mixin(src, dest) {
-		var keys = Object.keys(src);
-		for(var i = 0, len = keys.length; i < len; i++){
-			var key = keys[i];
-			dest[key] = src[key];
-		}
-	}
-	var BASE = "http://www.douban.com/j/app/radio/people";
+    function mixin(src, dest) {
+        var keys = Object.keys(src);
+        for (var i = 0, len = keys.length; i < len; i++) {
+            var key = keys[i];
+            dest[key] = src[key];
+        }
+    }
+
+    var BASE = "http://www.douban.com/j/app/radio/people";
 //	var BASE = "http://douban.fm/j/mine/playlist";
-	var CHANNELS = "http://www.douban.com/j/app/radio/channels";
-	var LOGIN = "http://www.douban.com/j/app/login";
+    var CHANNELS = "http://www.douban.com/j/app/radio/channels";
+    var LOGIN = "http://www.douban.com/j/app/login";
 
     function getUrlWidthParams(baseUrl, params) {
         params = params || {};
@@ -26,29 +27,32 @@
         }
         return ret;
     }
-	function Douban() {
-	}
 
-	var proto = {
-		sendRequest: function(config) {
-			if(!config) {
-				return;
-			}
-			var req = new XMLHttpRequest();
-			req.open(config.type, config.url);
-			req.onload = function(e) {
-				var response = JSON.parse(req.response);
-				config.callback(response);
-			};
-			req.send(config.data);
-		},
+    var ITEM_KEYS = ['token', 'userName', 'userId', 'expire'];
 
-		getChannels: function(callback) {
+    function Douban() {
+    }
+
+    var proto = {
+        sendRequest: function (config) {
+            if (!config) {
+                return;
+            }
+            var req = new XMLHttpRequest();
+            req.open(config.type, config.url);
+            req.onload = function (e) {
+                var response = JSON.parse(req.response);
+                config.callback(response);
+            };
+            req.send(config.data);
+        },
+
+        getChannels: function (callback) {
             var _this = this;
-			this.sendRequest({
-				type: 'get',
-				url: CHANNELS,
-				callback: function(response) {
+            this.sendRequest({
+                type: 'get',
+                url: CHANNELS,
+                callback: function (response) {
                     if (_this.token) {
                         // the user has logged in, display a red heart channel for him
                         response.channels.splice(0, 0, {
@@ -59,16 +63,16 @@
                             name_en: ""
                         });
                     }
-					callback(response.channels);
-				}
-			});
-		},
+                    callback(response.channels);
+                }
+            });
+        },
 
-		getSongs: function(channel ,callback) {
-			if(!channel) {
-				console.log("Invalid channel, couldn't get songs for it.");
-				return;
-			}
+        getSongs: function (channel, callback) {
+            if (!channel) {
+                console.log("Invalid channel, couldn't get songs for it.");
+                return;
+            }
 //            var url = BASE + '?token=' + this.token + '&kbps=192&app_name=radio_android&version=584&type=p&channel=' + channel.channel_id + '&user_id=' + this.userId + '&expire=' + this.expire + '&preventCache=' + Math.random();
 //            var url = BASE + '?app_name=radio_desktop_win&version=100&type=n&channel=' + channel.channel_id + '&preventCache=' + Math.random();
             var url = getUrlWidthParams(BASE, {
@@ -83,46 +87,86 @@
                 preventCache: Math.random()
             });
 
-			this.sendRequest({
-				type: 'get',
-				url: url,
-				callback: function(response) {
-					callback(response.song);
-				}
-			});
-		},
+            this.sendRequest({
+                type: 'get',
+                url: url,
+                callback: function (response) {
+                    callback(response.song);
+                }
+            });
+        },
 
-		login: function(info, callback) {
-			if(!(info.username && info.password)) {
-				console.log('Invalid login information.');
-			}
-			var parameters = {
-				'app_name': 'radio_desktop_win',
-				'version': 100,
-				'email': info.username,
-				'password': info.password
-			};
-			var data = new FormData();
-			for(var key in parameters) {
-				data.append(key, parameters[key]);
-			}
+        login: function (info, callback) {
+            if (!(info.username && info.password)) {
+                console.log('Invalid login information.');
+            }
+            var parameters = {
+                'app_name': 'radio_desktop_win',
+                'version': 100,
+                'email': info.username,
+                'password': info.password
+            };
+            var data = new FormData();
+            for (var key in parameters) {
+                data.append(key, parameters[key]);
+            }
 
             var _this = this;
-			this.sendRequest({
-				type: 'post',
-				url: LOGIN,
-				data: data,
-				callback: function(response) {
+            this.sendRequest({
+                type: 'post',
+                url: LOGIN,
+                data: data,
+                callback: function (response) {
                     _this.token = response.token;
                     _this.userName = response['user_name'];
                     _this.userId = response['user_id'];
                     _this.expire = response['expire'];
-					callback(response);
-				}
-			});
-		}
-	};
+                    _this.storeUserSession();
+                    callback(response);
+                }
+            });
+        },
 
-	mixin(proto, Douban.prototype);
-	window.Douban = Douban;
+        storeUserSession: function () {
+            var session = {};
+            for (var i = 0, len = ITEM_KEYS.length; i < len; i++) {
+                var key = ITEM_KEYS[i];
+                session[key] = this[key];
+            }
+            chrome.storage.sync.set(session);
+        },
+
+        loadUserSession: function (callback) {
+            var _this = this;
+            chrome.storage.sync.get(ITEM_KEYS, function(result) {
+                for (var i = 0, len = ITEM_KEYS.length; i < len; i++) {
+                    var key = ITEM_KEYS[i];
+                    _this[key] = result[key];
+                }
+                if(callback) {
+                    callback(result);
+                }
+            });
+        },
+
+        clearUserSession: function () {
+            chrome.storage.sync.clear();
+        },
+
+        testUserSession: function (callback) {
+            var _this = this;
+            this.loadUserSession(function() {
+                if (_this.token) {
+                    _this.getSongs({channel_id: -3}, function (songs) {
+                        callback(!!songs.length);
+                    });
+                } else {
+                    callback(false);
+                }
+            });
+        }
+    };
+
+    mixin(proto, Douban.prototype);
+    window.Douban = Douban;
 })();
