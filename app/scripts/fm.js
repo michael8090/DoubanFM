@@ -3,6 +3,7 @@ function fmCtrl($scope) {
 
 	$scope.channels = [];
 	$scope.songs = [];
+	$scope.showLoginDialog = 'hide';
 
 	$scope.getChannels = function() {
 		douban.getChannels(function(channels) {
@@ -19,8 +20,12 @@ function fmCtrl($scope) {
 		for(var i = 0; i < 5; i++){
 			douban.getSongs(channel, function(songs) {
 				$scope.$apply(function() {
-					$scope.songs = songs;
+					if(!(songs instanceof Array)) {
+						return ;
+					}
+					$scope.songs = $scope.songs.concat(songs);
 					$scope.currentSong = songs[0];
+					console.log("Current Song kbps: " + $scope.currentSong.kbps);
 					$scope.currentSongIndex = 0;
 				});
 			});
@@ -31,6 +36,7 @@ function fmCtrl($scope) {
 
 	$scope.$watch("currentChannelIndex", function(index) {
 		$scope.currentChannel = $scope.channels[index];
+		//$scope.songs = [];
 		$scope.getSongs($scope.currentChannel);
 	});
 
@@ -47,11 +53,6 @@ function fmCtrl($scope) {
 				$scope.getSongs($scope.currentChannel);
 			} else {
 				$scope.currentSongIndex = nextSongIndex;
-				// Issue: cannot play the next song automatically
-				// var player = $scope.player;
-				// player.pause();
-				// player.src = songs[$scope.currentSongIndex].url;
-				// player.play();
 			}
 
 		});
@@ -62,40 +63,22 @@ function fmCtrl($scope) {
 		$scope.player.addEventListener("ended",$scope.playNextSong);
 	}
 
-	// $scope.$watch("currentSongName", function(name) {
-	// 	var ss = $scope.songs,
-	// 		len = ss && ss.length;
-	// 	for(var i = 0; i < len; i++) {
-	// 		var song = ss[i];
-	// 		if(song.title === name) {
-	// 			$scope.currentSong = song;
-	// 		}
-	// 	}
-	// });
-
-	// $scope.$watch("currentSong", function(song) {
-	// 	if(!song) {
-	// 		return;
-	// 	}
-	// 	var player = document.getElementById("player");
-	// 	var source = player.firstChild;
-	// 	var newSource = document.createElement("source");
-	// 	player.pause();
-	// 	player.src = song.url;
-	// 	newSource.src = song.url;
-	// 	//player.replaceChild(newSource, source);
-	// 	player.play();
-		// var newPlayer = document.createElement("audio");
-		// newPlayer.src = song.url;
-		// newPlayer.setAttribute("controls","");
-		// newPlayer.setAttribute("autoplay", "");
-		// player.parentNode.replaceChild(newPlayer, player);
-	//});
+	$scope.login = function() {
+		var info = {
+			username: $scope.username,
+			password: $scope.password
+		};
+		douban.login(info, function(response) {
+			$scope.$apply(function() {
+				if(response.err !== 'ok') {
+					console.log("Login failed: " + response.err);
+					return ;
+				}
+				douban.token = response.token;
+				$scope.showLoginDialog = 'hide';
+			});
+		});
+	};
 
 
-
-
-
-	//$scope.songs = [{name:"test", url:"http://mr4.douban.com/201305262116/82db01a921aa0d7d22024bed821a8203/view/song/small/p1394944.mp3"}];
-	//$scope.currentSong = $scope.songs[0];
 }

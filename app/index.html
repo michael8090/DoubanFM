@@ -4,44 +4,51 @@
 	    <meta charset="utf-8">
 	    <title>Douban FM</title>
 	    <link rel="stylesheet" type="text/css" href="styles/main.css">
-	    <script type="text/javascript" src="scripts/libs/angular.min.js"></script>
+	    <script type="text/javascript" src="scripts/libs/angular.js"></script>
 	    <script type="text/javascript" src="scripts/doubanAPI.js"></script>
 	    <script type="text/javascript" src="scripts/fm.js"></script>
 	</head>
 	<body ng-app ng-csp class="autoSize" ng-controller="fmCtrl" style="display: -webkit-box; -webkit-box-orient: vertical;">
-	    <div><h1>Douban FM</h1></div>
+	    <div id="menu" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
+	    	<h1>Douban FM</h1>
+	    	<div>
+	    		<a href="" ng-click="showLoginDialog = 'show';"> Login </a>
+	    	</div>
+	    </div>
 		<div style="-webkit-box-flex:1; overflow: auto; -webkit-box-sizing: border-box;">
 			<div style="display: -webkit-box; height: 100%; width: 100%; -webkit-box-sizing: border-box;">
 	    		<div style="overflow: auto;">
 		    		<p>Channels</p>
-			    	<div>
-			    		<div ng-repeat="channel in channels" ng-model="currentChannel">
-			    			<input type="radio" name="channelName" value=$index id="channel-{{$index}}" ng-model="index">
-			    			<label for="channel-{{$index}}">
-                                {{channel.name}}
-                            </label>
-                            <br>
+			    	<form>
+			    		<div ng-repeat="channel in channels">
+			    			<input type="radio" name="channelName" value={{channels.indexOf(channel)}} ng-model="$parent.currentChannelIndex">
+			    			{{channel.name}}</br>
 			    		</div>
-			    	</div>
+			    	</form>
 		    	</div>
 		    	<div style="overflow: auto">
 		    		<p>Songs</p>
-		    		<div name="songs">
+		    		<form>
 		    			<div ng-repeat="song in songs" >
-		    				<input type="radio" name="songName" value={{$index}} id="song-{{$index}}" ng-model="$parent.currentSongIndex">
-                            <label for="song-{{$index}}">
-                                {{song.title}} by {{song.artist}}
-                            </label>
-                            <br>
+		    				<input type="radio" name="songName" value={{songs.indexOf(song)}} ng-model="$parent.currentSongIndex">{{song.title}} by {{song.artist}}</br>
 		    			</div>
-		    		</div>
+		    		</form>
 		    	</div>
 		    </div>
     	</div>
 	    <div>
-    		<!--<audio id="player" controls autoplay="false" name="media" src={{songs[currentSongIndex].url}}>-->
-            <audio id="player" controls name="media" src={{songs[currentSongIndex].url}}>
-            </audio>
+    		<audio id="player" controls autoplay name="media" src={{songs[currentSongIndex].url}}>
+    		</audio>
     	</div>
+    	<div class="login-{{showLoginDialog}}">
+    		<div style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; background-color: #ffffff; opacity: 0.5; z-index: 1;" ng-click="showLoginDialog = 'hide';"></div>
+    		<div style="display: -webkit-box; z-index: 2; position: relative">
+	    		<form>
+	    			Username: <input type="text" name="username" ng-model="username"><br>
+	    			Password: <input type="password" name="password" ng-model="password"><br>
+	    			<input type="submit" value="Login" ng-click="login()">
+	    		</form> 
+    		</div>
+	    </div>
 	</body>
 </html>

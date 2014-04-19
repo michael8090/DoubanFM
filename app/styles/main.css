@@ -1,22 +1,39 @@
 .autoSize {
-    position: relative;
-    width: 100%;
-    height: 100%;
+	position: relative;
+	width: 100%;
+	height: 100%;
 }
 
 .horizontalLayout {
-    display: -webkit-box;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
+	display: -webkit-box;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
 }
 
 body {
-    margin: 0px;
+	padding: 8px;
+	margin: 0px;
+	-webkit-box-sizing: border-box;
 }
 
 footer {
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+}
+
+.login-hide {
+	display: none;
+}
+
+.login-show {
+	display: -webkit-box;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0px;
+	top: 0px;
 }
