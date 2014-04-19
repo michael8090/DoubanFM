@@ -11,9 +11,10 @@
 	<body ng-app ng-csp class="autoSize" ng-controller="fmCtrl" style="display: -webkit-box; -webkit-box-orient: vertical;">
 	    <div id="menu" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
 	    	<h1>Douban FM</h1>
-	    	<div>
+	    	<div ng-show="!isLoggedIn">
 	    		<a href="" ng-click="showLoginDialog = 'show';"> Login </a>
 	    	</div>
+	    	<span ng-show="isLoggedIn">{{userName}}</span>
 	    </div>
 		<div style="-webkit-box-flex:1; overflow: auto; -webkit-box-sizing: border-box;">
 			<div style="display: -webkit-box; height: 100%; width: 100%; -webkit-box-sizing: border-box;">

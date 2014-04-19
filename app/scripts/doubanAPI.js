@@ -6,8 +6,8 @@
 			dest[key] = src[key];
 		}
 	}
-	//var BASE = "http://www.douban.com/j/app/radio/people";
-	var BASE = "http://douban.fm/j/mine/playlist";
+	var BASE = "http://www.douban.com/j/app/radio/people";
+//	var BASE = "http://douban.fm/j/mine/playlist";
 	var CHANNELS = "http://www.douban.com/j/app/radio/channels";
 	var LOGIN = "http://www.douban.com/j/app/login";
 	function Douban() {
@@ -42,7 +42,17 @@
 				console.log("Invalid channel, couldn't get songs for it.");
 				return;
 			}
-			var url = BASE + '?token=' + this.token + '&kbps=192&app_name=radio_android&version=584&type=p&channel=' + channel.channel_id + '&preventCache=' + Math.random();
+//            var url = BASE + '?token=' + this.token + '&kbps=192&app_name=radio_android&version=584&type=p&channel=' + channel.channel_id + '&user_id=' + this.userId + '&expire=' + this.expire + '&preventCache=' + Math.random();
+            var url = BASE + '?app_name=radio_desktop_win&version=100&type=n&channel=' + channel.channel_id + '&preventCache=' + Math.random();
+            if (this.token) {
+                url += '&token=' + this.token;
+            }
+            if (this.expire) {
+                url += '&expire=' + this.expire;
+            }
+            if (this.userId) {
+                url += '&user_id=' + this.userId;
+            }
 			//var url = BASE + '?kbps=192&from=mainsite&type=n&channel=' + channel.channel_id;
 			this.sendRequest({
 				type: 'get',
@@ -58,8 +68,8 @@
 				console.log('Invalid login information.');
 			}
 			var parameters = {
-				'app_name': 'radio_android',
-				'version': 584,
+				'app_name': 'radio_desktop_win',
+				'version': 100,
 				'email': info.username,
 				'password': info.password
 			};
