@@ -41,3 +41,28 @@ footer {
 .display-hide {
     display: none;
 }
+
+audio {
+    width: 100%;
+}
+
+audio:first-child:first-child:first-child {
+    background: #ffffff;
+    border-radius: 0;
+}
+
+audio:first-child:first-child:first-child:nth-child(2):first-child {
+    color: black;
+}
+
+audio::-webkit-media-controls-panel {
+    background: white;
+}
+
+audio::-webkit-media-controls-current-time-display {
+    color: black;
+}
+
+input[type="range"]::-webkit-media-slider-container {
+    background: white;
+}
