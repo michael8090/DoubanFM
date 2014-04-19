@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html class="autoSize">
+	<head>
+	    <meta charset="utf-8">
+	    <title>Douban FM</title>
+	    <link rel="stylesheet" type="text/css" href="styles/main.css">
+	    <script type="text/javascript" src="scripts/libs/angular.min.js"></script>
+	    <script type="text/javascript" src="scripts/doubanAPI.js"></script>
+	    <script type="text/javascript" src="scripts/fm.js"></script>
+	</head>
+	<body ng-app ng-csp class="autoSize" ng-controller="fmCtrl" style="display: -webkit-box; -webkit-box-orient: vertical;">
+	    <div><h1>Douban FM</h1></div>
+		<div style="-webkit-box-flex:1; overflow: auto; -webkit-box-sizing: border-box;">
+			<div style="display: -webkit-box; height: 100%; width: 100%; -webkit-box-sizing: border-box;">
+	    		<div style="overflow: auto;">
+		    		<p>Channels</p>
+			    	<div>
+			    		<div ng-repeat="channel in channels" ng-model="currentChannel">
+			    			<input type="radio" name="channelName" value=$index id="channel-{{$index}}" ng-model="index">
+			    			<label for="channel-{{$index}}">
+                                {{channel.name}}
+                            </label>
+                            <br>
+			    		</div>
+			    	</div>
+		    	</div>
+		    	<div style="overflow: auto">
+		    		<p>Songs</p>
+		    		<div name="songs">
+		    			<div ng-repeat="song in songs" >
+		    				<input type="radio" name="songName" value={{$index}} id="song-{{$index}}" ng-model="$parent.currentSongIndex">
+                            <label for="song-{{$index}}">
+                                {{song.title}} by {{song.artist}}
+                            </label>
+                            <br>
+		    			</div>
+		    		</div>
+		    	</div>
+		    </div>
+    	</div>
+	    <div>
+    		<!--<audio id="player" controls autoplay="false" name="media" src={{songs[currentSongIndex].url}}>-->
+            <audio id="player" controls name="media" src={{songs[currentSongIndex].url}}>
+            </audio>
+    	</div>
+	</body>
+</html>

@@ -1,0 +1,22 @@
+.autoSize {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.horizontalLayout {
+    display: -webkit-box;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+body {
+    margin: 0px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+}
