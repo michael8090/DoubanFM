@@ -21,8 +21,11 @@
 		    		<p>Channels</p>
 			    	<form>
 			    		<div ng-repeat="channel in channels">
-			    			<input type="radio" name="channelName" value={{channels.indexOf(channel)}} ng-model="$parent.currentChannelIndex">
-			    			{{channel.name}}</br>
+			    			<input type="radio" name="channelName" value={{$index}} id="channel-{{$index}}" ng-model="$parent.currentChannelIndex">
+                            <label for="channel-{{$index}}">
+                                {{channel.name}}
+                            </label>
+                            <br>
 			    		</div>
 			    	</form>
 		    	</div>
@@ -30,7 +33,11 @@
 		    		<p>Songs</p>
 		    		<form>
 		    			<div ng-repeat="song in songs" >
-		    				<input type="radio" name="songName" value={{songs.indexOf(song)}} ng-model="$parent.currentSongIndex">{{song.title}} by {{song.artist}}</br>
+		    				<input type="radio" name="songName" value={{$index}} id="song-{{$index}}" ng-model="$parent.currentSongIndex">
+                            <label for="song-{{$index}}">
+                                {{song.title}} by {{song.artist}}
+                            </label>
+                            <br>
 		    			</div>
 		    		</form>
 		    	</div>
@@ -41,7 +48,7 @@
     		</audio>
     	</div>
     	<div class="login-{{showLoginDialog}}">
-    		<div style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; background-color: #ffffff; opacity: 0.5; z-index: 1;" ng-click="showLoginDialog = 'hide';"></div>
+    		<div style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%; background-color: #ffffff; opacity: 0.97; z-index: 1;" ng-click="showLoginDialog = 'hide';"></div>
     		<div style="display: -webkit-box; z-index: 2; position: relative">
 	    		<form>
 	    			Username: <input type="text" name="username" ng-model="username"><br>
