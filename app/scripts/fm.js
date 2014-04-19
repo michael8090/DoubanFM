@@ -167,7 +167,11 @@ function fmCtrl($scope) {
 
 	$scope.player = document.getElementById("player");
 	if($scope.player) {
-		$scope.player.addEventListener("ended",$scope.playNextSong);
+		$scope.player.addEventListener("ended",function() {
+            $scope.$apply(function() {
+                $scope.playNextSong();
+            });
+        });
 	}
 
 	$scope.login = function() {
