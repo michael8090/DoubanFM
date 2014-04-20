@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="autoSize">
+<html ng-app="fm" ng-controller="fmCtrl" ng-csp class="autoSize">
     <head>
         <meta charset="utf-8">
         <title>Douban FM</title>
@@ -13,7 +13,7 @@
         <script type="text/javascript" src="scripts/fm.js"></script>
         <!-- endbuild -->
     </head>
-    <body ng-app ng-csp class="autoSize" ng-controller="fmCtrl" style="display: -webkit-box; -webkit-box-orient: vertical;">
+    <body class="autoSize" style="display: -webkit-box; -webkit-box-orient: vertical;">
         <div id="menu" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
             <h1>Douban FM</h1>
             <div ng-show="!isLoggedIn">

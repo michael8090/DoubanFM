@@ -1,3 +1,4 @@
+
 function fmCtrl($scope) {
 	var douban = new Douban(),
         maxSongNumber = 200;
@@ -196,3 +197,6 @@ function fmCtrl($scope) {
 
 
 }
+fmCtrl.$inject = ['$scope'];
+var fm = angular.module('fm', []);
+fm.controller('fmCtrl', fmCtrl);
