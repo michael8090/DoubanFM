@@ -67,6 +67,10 @@ input[type="range"]::-webkit-media-slider-container {
     background: white;
 }
 
+#controlButtonsContainer {
+    padding-right: 10px;
+}
+
 #controlButtonsContainer > div {
     margin: 0 5px 0 5px;
 }
@@ -93,4 +97,18 @@ input[type="range"]::-webkit-media-slider-container {
 
 .isLiked {
     color: #ff8f73;
+}
+
+#moreSongButton {
+    text-align: center;
+    color: gray;
+    cursor: pointer;
+}
+
+.interactive {
+    cursor: pointer;
+}
+
+.interactive:hover{
+    text-shadow: 0px 0px 1px gray;
 }

@@ -19,11 +19,11 @@ function fmCtrl($scope) {
         SONG_ID_KEY = 'sid';
 
 
-    var getCurrentChanel = function() {
+    $scope.getCurrentChannel = function() {
         return $scope.channelMap[$scope.currentChannelId];
     };
 
-    var setCurrentChanel = function(channel) {
+    $scope.setCurrentChanel = function(channel) {
         if (!channel) {
             return ;
         }
@@ -31,13 +31,11 @@ function fmCtrl($scope) {
         $scope.currentChannelIndex = $scope.channels.indexOf(channel);
     };
 
-    var getCurrentSong = function() {
+    $scope.getCurrentSong = function() {
         return $scope.songMap[$scope.currentSongId];
     };
 
-    $scope.getCurrentSong = getCurrentSong;
-
-    var setCurrentSong = function(song) {
+    $scope.setCurrentSong = function(song) {
         if (!song) {
             return ;
         }
@@ -46,11 +44,11 @@ function fmCtrl($scope) {
     };
 
     var checkChannelAndSong = function () {
-        if (!getCurrentChanel()) {
-            setCurrentChanel($scope.channels[0]);
+        if (!$scope.getCurrentChannel()) {
+            $scope.setCurrentChanel($scope.channels[0]);
         }
-        if (!getCurrentSong()) {
-            setCurrentSong($scope.songs[0]);
+        if (!$scope.getCurrentSong()) {
+            $scope.setCurrentSong($scope.songs[0]);
         }
     };
 
@@ -100,13 +98,13 @@ function fmCtrl($scope) {
                 for(j = 0; j < rl; j++) {
                     $scope.songMap[removedSongs[j]] = undefined;
                 }
-                setCurrentSong($scope.songs[$scope.currentSongId]);
+                $scope.setCurrentSong($scope.songs[$scope.currentSongId]);
             }
         }
     };
 
 	$scope.getSongs = function(channel, callback) {
-		for(var i = 0; i < 5; i++){
+//		for(var i = 0; i < 5; i++){
 			douban.getSongs(channel, function(songs) {
 				$scope.$apply(function() {
 
@@ -116,10 +114,10 @@ function fmCtrl($scope) {
                     if (callback) {
                         callback(songs);
                     }
-					console.log("Current Song kbps: " + getCurrentSong().kbps);
+					console.log("Current Song kbps: " + $scope.getCurrentSong().kbps);
 				});
 			});
-		}
+//		}
 	};
 
     douban.testUserSession(function(isValid) {
@@ -139,33 +137,33 @@ function fmCtrl($scope) {
         if (newValue !== oldValue) {
             $scope.songs = [];
             $scope.songMap = {};
-            $scope.getSongs(getCurrentChanel());
+            $scope.getSongs($scope.getCurrentChannel());
         }
 	});
 
     $scope.$watch("currentSongId", function(newValue, oldValue) {
         if (newValue !== oldValue) {
-            setCurrentSong($scope.songMap[newValue]);
-//            $scope.getSongs(getCurrentChanel());
+            $scope.setCurrentSong($scope.songMap[newValue]);
+//            $scope.getSongs($scope.getCurrentChanel());
         }
     });
 
     $scope.getChannels(function() {
-        $scope.getSongs(getCurrentChanel());
+        $scope.getSongs($scope.getCurrentChannel());
     });
 
 
     $scope.playSong = function (index) {
         var nextSong = $scope.songs[index];
         if (nextSong) {
-            setCurrentSong(nextSong);
+            $scope.setCurrentSong(nextSong);
         } else {
-            $scope.getSongs(getCurrentChanel(), function () {
+            $scope.getSongs($scope.getCurrentChannel(), function () {
                 var nextSong = $scope.songs[index];
                 if (nextSong === undefined) {//it happens when the channel has no new song
                     nextSong = $scope.songs[Math.floor(Math.random() * $scope.songs)];
                 }
-                setCurrentSong(nextSong)
+                $scope.setCurrentSong(nextSong)
             });
         }
     };
@@ -189,8 +187,8 @@ function fmCtrl($scope) {
     };
 
     $scope.rate = function() {
-        var song = getCurrentSong(),
-            channel = getCurrentChanel();
+        var song = $scope.getCurrentSong(),
+            channel = $scope.getCurrentChannel();
         if (!song) {
             return ;
         }
@@ -204,17 +202,17 @@ function fmCtrl($scope) {
     };
 
     $scope.skip = function() {
-        douban.skip(getCurrentSong(), getCurrentChanel(), reportSongCallback);
+        douban.skip($scope.getCurrentSong(), $scope.getCurrentChannel(), reportSongCallback);
         $scope.playNextSong();
     };
 
     $scope.dislike = function() {
-        douban.dislike(getCurrentSong(), getCurrentChanel(), reportSongCallback);
+        douban.dislike($scope.getCurrentSong(), $scope.getCurrentChannel(), reportSongCallback);
         $scope.playNextSong();
     };
 
     $scope.end = function() {
-        douban.end(getCurrentSong(), getCurrentChanel(), reportSongCallback);
+        douban.end($scope.getCurrentSong(), $scope.getCurrentChannel(), reportSongCallback);
         $scope.playNextSong();
     };
 
