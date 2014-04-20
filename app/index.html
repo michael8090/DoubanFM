@@ -29,8 +29,8 @@
                 <div style="overflow: auto;">
                     <p>Channels</p>
                     <form>
-                        <div ng-repeat="channel in channels">
-                            <input type="radio" name="channelId" value={{channel.channel_id}} id="channel-{{$index}}" ng-model="$parent.currentChannelId">
+                        <div ng-repeat="channel in channels" class="{{channel.isPlaying && 'selected'}}">
+                            <input ng-show="hidden" type="radio" name="channelId" value={{channel.channel_id}} id="channel-{{$index}}" ng-model="$parent.currentChannelId">
                             <label for="channel-{{$index}}">
                                 {{channel.name}}
                             </label>
@@ -41,10 +41,10 @@
                 <div style="overflow: auto">
                     <p>Songs</p>
                     <form>
-                        <div ng-repeat="song in songs | filter:searchKey" >
-                            <input type="radio" name="songId" value={{song.sid}} id="song-{{$index}}" ng-model="$parent.currentSongId">
+                        <div ng-repeat="song in songs | filter:searchKey" class="{{song.isPlaying && 'selected'}}">
+                            <input ng-show="hidden" type="radio" name="songId" value={{song.sid}} id="song-{{$index}}" ng-model="$parent.currentSongId">
                             <label for="song-{{$index}}">
-                                {{song.title}} by {{song.artist}}
+                                {{song.title}} <span style="color: #c9c9c9">by</span> {{song.artist}}
                             </label>
                             <br>
                         </div>

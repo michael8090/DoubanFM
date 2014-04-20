@@ -137,14 +137,30 @@ function fmCtrl($scope) {
         if (newValue !== oldValue) {
             $scope.songs = [];
             $scope.songMap = {};
-            $scope.getSongs($scope.getCurrentChannel());
+            var oldChannel = $scope.channelMap[oldValue],
+                newChannel = $scope.channelMap[newValue];
+            if (oldChannel) {
+                oldChannel.isPlaying = false;
+            }
+            if (newChannel) {
+                newChannel.isPlaying = true;
+            }
+            $scope.setCurrentChanel(newChannel)
+            $scope.getSongs(newChannel);
         }
 	});
 
     $scope.$watch("currentSongId", function(newValue, oldValue) {
         if (newValue !== oldValue) {
-            $scope.setCurrentSong($scope.songMap[newValue]);
-//            $scope.getSongs($scope.getCurrentChanel());
+            var oldSong = $scope.songMap[oldValue],
+                newSong =  $scope.songMap[newValue];
+            if (oldSong) {
+                oldSong.isPlaying = false;
+            }
+            if (newSong) {
+                newSong.isPlaying = true;
+            }
+            $scope.setCurrentSong(newSong);
         }
     });
 
