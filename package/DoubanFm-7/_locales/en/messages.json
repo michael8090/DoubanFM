@@ -1,0 +1,10 @@
+{
+    "appName": {
+        "message": "DoubanFm",
+        "description": "The name of the application"
+    },
+    "appDescription": {
+        "message": "It's a simple douban fm app. Rewrite it to make it feel better. ; )",
+        "description": "The description of the application"
+    }
+}
