@@ -19,7 +19,10 @@
             <div ng-show="!isLoggedIn">
                 <a href="" ng-click="showLoginDialog = 'show';"> Login </a>
             </div>
-            <span ng-show="isLoggedIn">{{userName}}</span>
+            <div id="userNameZone" ng-show="isLoggedIn">
+                <div>{{userName}}</div>
+                <div id="logoutIndicator" ng-click="logout()">Logout?</div>
+            </div>
         </div>
         <div style="-webkit-box-flex:1; overflow: auto; -webkit-box-sizing: border-box;">
             <div style="display: -webkit-box; height: 100%; width: 100%; -webkit-box-sizing: border-box;">
@@ -51,12 +54,14 @@
         </div>
         <div style="display: flex;">
             <div style="flex: 1">
-                <audio id="player" controls autoplay name="media" src={{songMap[currentSongId].url}}>
+                <audio id="player" controls autoplay name="media" src={{getCurrentSong().url}}>
                 </audio>
             </div>
-            <div style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify; width: 60px;">
+            <div id="controlButtonsContainer" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
+                <div ng-click="rate()" style="color: {{getCurrentSong().like && '#ff8f73'}}">❤</div>
                 <div ng-click="playLastSong()">Last</div>
-                <div ng-click="playNextSong()">Next</div>
+                <div ng-click="skip()">Next</div>
+                <div ng-click="dislike()">Dislike</div>
             </div>
         </div>
         <div class="login-{{showLoginDialog}}">

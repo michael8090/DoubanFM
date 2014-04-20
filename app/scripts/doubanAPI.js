@@ -12,6 +12,30 @@
     var CHANNELS = "http://www.douban.com/j/app/radio/channels";
     var LOGIN = "http://www.douban.com/j/app/login";
 
+
+    /*
+        类型	需要参数	含义	报告长度
+        b	sid	bye，不再播放	短报告
+        e	sid	end，当前歌曲播放完毕，但是歌曲队列中还有歌曲	短报告
+        n		new，没有歌曲播放，歌曲队列也没有任何歌曲，需要返回新播放列表	长报告
+        p		playing，歌曲正在播放，队列中还有歌曲，需要返回新的播放列表
+        s	sid	skip，歌曲正在播放，队列中还有歌曲，适用于用户点击下一首	短报告
+        r	sid	rate，歌曲正在播放，标记喜欢当前歌曲	短报告
+        s	sid	skip，歌曲正在播放，队列中还有歌曲，适用于用户点击下一首	短报告
+        u	sid	unrate，歌曲正在播放，标记取消喜欢当前歌曲	短报告
+        其中，p报告可以附上h参数，表示最近播完的歌的信息。
+    */
+
+    var SONG_REPORT_TYPES = {
+        BYE: 'b',
+        END: 'e',
+        NEW: 'n',
+        PLAYING: 'p',
+        SKIP: 's',
+        RATE: 'r',
+        UNRATE: 'u'
+    };
+
     function getUrlWidthParams(baseUrl, params) {
         params = params || {};
         var ret = baseUrl + '?',
@@ -68,24 +92,23 @@
             });
         },
 
-        getSongs: function (channel, callback) {
-            if (!channel) {
-                console.log("Invalid channel, couldn't get songs for it.");
-                return;
-            }
-//            var url = BASE + '?token=' + this.token + '&kbps=192&app_name=radio_android&version=584&type=p&channel=' + channel.channel_id + '&user_id=' + this.userId + '&expire=' + this.expire + '&preventCache=' + Math.random();
-//            var url = BASE + '?app_name=radio_desktop_win&version=100&type=n&channel=' + channel.channel_id + '&preventCache=' + Math.random();
-            var url = getUrlWidthParams(BASE, {
+        requestSongs: function (params, callback) {
+            params = params || {};
+            var defaultParams = {
                 app_name: 'radio_desktop_win',
                 version: 100,
-                type: 'n',
-                channel: channel.channel_id,
+                type: SONG_REPORT_TYPES.NEW,
+//                channel: channel.channel_id,
                 token: this.token,
                 expire: this.expire,
                 user_id: this.userId,
                 kbps: 192,
                 preventCache: Math.random()
-            });
+            };
+            mixin(params, defaultParams);
+            params = defaultParams;
+
+            var url = getUrlWidthParams(BASE, params);
 
             this.sendRequest({
                 type: 'get',
@@ -94,6 +117,48 @@
                     callback(response.song);
                 }
             });
+        },
+
+        getSongs: function (channel, callback) {
+            if (!channel) {
+                console.log("Invalid channel, couldn't get songs for it.");
+                return;
+            }
+            this.requestSongs({
+                channel: channel.channel_id,
+                type: SONG_REPORT_TYPES.NEW
+            }, callback);
+        },
+
+        reportSong: function(song, channel, type, callback) {
+            if (!song) {
+                return ;
+            }
+            this.requestSongs({
+                channel: channel.channel_id,
+                sid: song.sid,
+                type: type
+            }, callback);
+        },
+
+        rate: function(song, channel, callback) {
+            this.reportSong(song, channel, SONG_REPORT_TYPES.RATE, callback);
+        },
+
+        unRate: function(song, channel, callback) {
+            this.reportSong(song, channel, SONG_REPORT_TYPES.UNRATE, callback);
+        },
+
+        dislike: function(song, channel, callback) {
+            this.reportSong(song, channel, SONG_REPORT_TYPES.BYE, callback);
+        },
+
+        skip: function(song, channel, callback) {
+            this.reportSong(song, channel, SONG_REPORT_TYPES.SKIP, callback);
+        },
+
+        end: function(song, channel, callback) {
+            this.reportSong(song, channel, SONG_REPORT_TYPES.END, callback);
         },
 
         login: function (info, callback) {
@@ -125,6 +190,14 @@
                     callback(response);
                 }
             });
+        },
+
+        logout: function(callback) {
+            this.token = undefined;
+            this.userName = undefined;
+            this.userId = undefined;
+            this.expire = undefined;
+            this.clearUserSession();
         },
 
         storeUserSession: function () {

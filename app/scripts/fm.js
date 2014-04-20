@@ -35,6 +35,8 @@ function fmCtrl($scope) {
         return $scope.songMap[$scope.currentSongId];
     };
 
+    $scope.getCurrentSong = getCurrentSong;
+
     var setCurrentSong = function(song) {
         if (!song) {
             return ;
@@ -76,33 +78,40 @@ function fmCtrl($scope) {
 		});
 	};
 
+    $scope.addSongs = function(songs, needsExclude) {
+        if(!(songs instanceof Array)) {
+            return ;
+        }
+        var k,
+            sl = songs.length;
+        for(k = 0; k < sl; k++) {
+            var song = songs[k];
+            if ($scope.songMap[song[SONG_ID_KEY]] === undefined) {
+                $scope.songMap[song[SONG_ID_KEY]] = song;
+                $scope.songs.push(song);
+            }
+        }
+        if (needsExclude) {
+            var exceedLength = Math.min($scope.songs.length - maxSongNumber, $scope.currentSongIndex);
+            if (exceedLength > 0) {
+                var removedSongs = $scope.songs.splice(0, exceedLength),
+                    j,
+                    rl = removedSongs.length;
+                for(j = 0; j < rl; j++) {
+                    $scope.songMap[removedSongs[j]] = undefined;
+                }
+                setCurrentSong($scope.songs[$scope.currentSongId]);
+            }
+        }
+    };
+
 	$scope.getSongs = function(channel, callback) {
 		for(var i = 0; i < 5; i++){
 			douban.getSongs(channel, function(songs) {
 				$scope.$apply(function() {
-					if(!(songs instanceof Array)) {
-						return ;
-					}
+
                     //try to clear the old list
-                    var k,
-                        sl = songs.length;
-                    for(k = 0; k < sl; k++) {
-                        var song = songs[k];
-                        if ($scope.songMap[song[SONG_ID_KEY]] === undefined) {
-                            $scope.songMap[song[SONG_ID_KEY]] = song;
-                            $scope.songs.push(song);
-                        }
-                    }
-                    var exceedLength = Math.min($scope.songs.length - maxSongNumber, $scope.currentSongIndex);
-                    if (exceedLength > 0) {
-                        var removedSongs = $scope.songs.splice(0, exceedLength),
-                            j,
-                            rl = removedSongs.length;
-                        for(j = 0; j < rl; j++) {
-                            $scope.songMap[removedSongs[j]] = undefined;
-                        }
-                        setCurrentSong($scope.songs[$scope.currentSongId]);
-                    }
+                    $scope.addSongs(songs, true);
                     checkChannelAndSong();
                     if (callback) {
                         callback(songs);
@@ -166,11 +175,47 @@ function fmCtrl($scope) {
         $scope.playSong(index);
     };
 
+    var reportSongCallback = function(songs) {
+        $scope.$apply(function() {
+            $scope.addSongs(songs);
+        });
+    };
+
+    $scope.rate = function() {
+        var song = getCurrentSong(),
+            channel = getCurrentChanel();
+        if (!song) {
+            return ;
+        }
+        var isLiked = !parseInt(song['like'], 10);
+        song.like = isLiked ? 1 : 0;
+        if (isLiked) {
+            douban.rate(song, channel, reportSongCallback);
+        } else {
+            douban.unRate(song, channel, reportSongCallback);
+        }
+    };
+
+    $scope.skip = function() {
+        douban.skip(getCurrentSong(), getCurrentChanel(), reportSongCallback);
+        $scope.playNextSong();
+    };
+
+    $scope.dislike = function() {
+        douban.dislike(getCurrentSong(), getCurrentChanel(), reportSongCallback);
+        $scope.playNextSong();
+    };
+
+    $scope.end = function() {
+        douban.end(getCurrentSong(), getCurrentChanel(), reportSongCallback);
+        $scope.playNextSong();
+    };
+
 	$scope.player = document.getElementById("player");
 	if($scope.player) {
 		$scope.player.addEventListener("ended",function() {
             $scope.$apply(function() {
-                $scope.playNextSong();
+                $scope.end();
             });
         });
 	}
@@ -194,6 +239,13 @@ function fmCtrl($scope) {
 			});
 		});
 	};
+
+    $scope.logout = function() {
+        douban.logout();
+        $scope.userName = '';
+        $scope.isLoggedIn = false;
+        $scope.getChannels();
+    }
 
 
 }
