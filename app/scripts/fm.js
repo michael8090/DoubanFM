@@ -143,6 +143,13 @@ function fmCtrl($scope) {
         }
 	});
 
+    $scope.$watch("currentSongId", function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+            setCurrentSong($scope.songMap[newValue]);
+//            $scope.getSongs(getCurrentChanel());
+        }
+    });
+
     $scope.getChannels(function() {
         $scope.getSongs(getCurrentChanel());
     });
