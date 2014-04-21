@@ -6,7 +6,9 @@
     "default_locale": "en",
     "permissions": [
         "<all_urls>",
-        "storage"
+        "storage",
+        "declarativeWebRequest",
+        "webRequest"
     ],
     "icons": {
         "16": "images/icon-16.png",
