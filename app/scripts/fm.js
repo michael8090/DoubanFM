@@ -83,11 +83,19 @@ function fmCtrl($scope) {
         var k,
             sl = songs.length;
         for(k = 0; k < sl; k++) {
-            var song = songs[k];
-            if ($scope.songMap[song[SONG_ID_KEY]] === undefined) {
+            var song = songs[k],
+                existedSong = $scope.songMap[song[SONG_ID_KEY]];
+            if (existedSong === undefined) {
                 $scope.songMap[song[SONG_ID_KEY]] = song;
                 $scope.songs.push(song);
             }
+            //let it to be in the $scope, the changed model should update the view automatically
+//            else {
+//                if (song.url) {
+//                    existedSong.url = song.url;
+//                }
+//                existedSong.isHightQuality = song.isHightQuality;
+//            }
         }
         if (needsExclude) {
             var exceedLength = Math.min($scope.songs.length - maxSongNumber, $scope.currentSongIndex);

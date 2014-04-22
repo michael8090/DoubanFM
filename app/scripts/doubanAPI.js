@@ -138,13 +138,13 @@
                     for(i = 0; i < len; i++) {
                         (function(song) {
                             _this.search(song, function(response) {
-                                var j, rsongs = response.songs || [],
+                                var j, rsongs = response.code === 200 && response.result && response.result.songs || [],
                                     lr = rsongs.length,
                                     matchedSong ;
                                 for (j = 0; j < lr && !matchedSong; j++) {
                                     var s = rsongs[j];
                                     if (s) {
-                                        if (s.name === song.name && s.artists) {
+                                        if (s.name === song.title && s.artists) {
                                             var as = s.artists,
                                                 la = as.length,
                                                 k;
@@ -152,20 +152,29 @@
                                                 var ta = as[k];
                                                 if (ta.name === song.artist) {
                                                     matchedSong = s;
+                                                    console.log("getcha!");
                                                     break;
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                if (matchedSong && !song.isPlaying) {
+                                if (matchedSong) {
                                     _this.sendRequest({
                                         type: 'get',
                                         url: getUrlWidthParams(DETAIL163, {
-                                            id: matchedSong.id
+                                            ids: '[' + matchedSong.id + ']'
                                         }),
                                         callback: function(response) {
-                                            debugger;
+                                            if (response.code === 200) {
+                                                var hQSong = response.songs && response.songs[0];
+//                                                if (hQSong  && !song.isPlaying) { //don't need to check the isPlaying, as it will not trigger a change in the view
+                                                if (hQSong && hQSong.mp3Url) {
+                                                    song.url = hQSong.mp3Url;
+                                                    song.isHightQuality = true;
+                                                    callback([song]);
+                                                }
+                                            }
                                         }
                                     });
                                 }
@@ -297,10 +306,10 @@
         },
 
         search: function (song, callback) {
-            chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
-                var header = '';
-            }, {urls: ['*:music.163.com/*']});
-            document.cookie = 'appver=1.5.2';
+//            chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+//                var header = '';
+//            }, {urls: ['*:music.163.com/*']});
+//            document.cookie = 'appver=1.5.2';
             this.sendRequest({
                 url: SEARCH163,
                 type: 'POST',
@@ -321,9 +330,9 @@
     mixin(proto, Douban.prototype);
     window.Douban = Douban;
 
-    chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
-        var header = '';
-    }, {urls: ['*:music.163.com/*']});
+//    chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+//        var header = '';
+//    }, {urls: ['*:music.163.com/*']});
 
     //    var rule163 = {
 //        conditions: [
