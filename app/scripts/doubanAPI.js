@@ -77,14 +77,11 @@
                 var response = JSON.parse(req.response);
                 config.callback(response);
             };
-//            if (config.referer) {
-//                req.setRequestHeader('Referer', REFERER163);
-//            }
 
-            if (config.type.toLowerCase() === 'post') {
-                req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            if (config['Content-type']) {
+                req.setRequestHeader("Content-type", config['Content-type']);
             }
-            req.send(JSON.stringify(config.data));
+            req.send(config.data);
         },
 
         getChannels: function (callback) {
@@ -313,6 +310,7 @@
             this.sendRequest({
                 url: SEARCH163,
                 type: 'POST',
+                'Content-type': "application/x-www-form-urlencoded",
                 data: mergeParams({
                     type: 1,
                     s: song.title + ' ' + song.artist,

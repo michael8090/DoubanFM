@@ -14,6 +14,7 @@ function fmCtrl($scope) {
     $scope.showLoginDialog = 'hide';
     $scope.isLoggedIn = false;
     $scope.userName = '';
+    $scope.loginError = '';
 
     var CHANNEL_ID_KEY = 'channel_id',
         SONG_ID_KEY = 'sid';
@@ -60,6 +61,10 @@ function fmCtrl($scope) {
             ret[array[i][key]] = array[i];
         }
         return ret;
+    };
+
+    $scope.isPlaying = function(item) {
+        return item === $scope.getCurrentChannel() || item === $scope.getCurrentSong();
     };
 
 
@@ -111,22 +116,20 @@ function fmCtrl($scope) {
         }
     };
 
-	$scope.getSongs = function(channel, callback) {
-//		for(var i = 0; i < 5; i++){
-			douban.getSongs(channel, function(songs) {
-				$scope.$apply(function() {
+    $scope.getSongs = function (channel, callback) {
+        douban.getSongs(channel, function (songs) {
+            $scope.$apply(function () {
 
-                    //try to clear the old list
-                    $scope.addSongs(songs, true);
-                    checkChannelAndSong();
-                    if (callback) {
-                        callback(songs);
-                    }
-					console.log("Current Song kbps: " + $scope.getCurrentSong().kbps);
-				});
-			});
-//		}
-	};
+                //try to clear the old list
+                $scope.addSongs(songs, true);
+                checkChannelAndSong();
+                if (callback) {
+                    callback(songs);
+                }
+                console.log("Current Song kbps: " + $scope.getCurrentSong().kbps);
+            });
+        });
+    };
 
     douban.testUserSession(function(isValid) {
         if (isValid) {
@@ -145,29 +148,16 @@ function fmCtrl($scope) {
         if (newValue !== oldValue) {
             $scope.songs = [];
             $scope.songMap = {};
-            var oldChannel = $scope.channelMap[oldValue],
-                newChannel = $scope.channelMap[newValue];
-            if (oldChannel) {
-                oldChannel.isPlaying = false;
-            }
-            if (newChannel) {
-                newChannel.isPlaying = true;
-            }
-            $scope.setCurrentChanel(newChannel)
+            var newChannel = $scope.channelMap[newValue];
+
+            $scope.setCurrentChanel(newChannel);
             $scope.getSongs(newChannel);
         }
 	});
 
     $scope.$watch("currentSongId", function(newValue, oldValue) {
         if (newValue !== oldValue) {
-            var oldSong = $scope.songMap[oldValue],
-                newSong =  $scope.songMap[newValue];
-            if (oldSong) {
-                oldSong.isPlaying = false;
-            }
-            if (newSong) {
-                newSong.isPlaying = true;
-            }
+            var newSong =  $scope.songMap[newValue];
             $scope.setCurrentSong(newSong);
         }
     });
@@ -257,6 +247,7 @@ function fmCtrl($scope) {
 		douban.login(info, function(response) {
 			$scope.$apply(function() {
 				if(response.err !== 'ok') {
+                    $scope.loginError = response.err;
 					console.log("Login failed: " + response.err);
 					return ;
 				}
@@ -264,6 +255,7 @@ function fmCtrl($scope) {
                 $scope.userName = response['user_name'];
                 $scope.showLoginDialog = 'hide';
                 $scope.isLoggedIn = true;
+                $scope.loginError = '';
                 $scope.getChannels();
 			});
 		});
@@ -272,6 +264,7 @@ function fmCtrl($scope) {
     $scope.logout = function() {
         douban.logout();
         $scope.userName = '';
+        $scope.loginError = '';
         $scope.isLoggedIn = false;
         $scope.getChannels();
     }
