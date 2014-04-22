@@ -90,7 +90,7 @@ function fmCtrl($scope) {
         for(k = 0; k < sl; k++) {
             var song = songs[k],
                 existedSong = $scope.songMap[song[SONG_ID_KEY]];
-            if (existedSong === undefined) {
+            if (existedSong === undefined && song.adtype === undefined) {// remove the adds
                 $scope.songMap[song[SONG_ID_KEY]] = song;
                 $scope.songs.push(song);
             }
