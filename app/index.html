@@ -9,6 +9,7 @@
 
         <!-- build:js scripts/index.js -->
         <script type="text/javascript" src="scripts/libs/angular.js"></script>
+        <script type="text/javascript" src="scripts/libs/forge.bundle.js"></script>
         <script type="text/javascript" src="scripts/doubanAPI.js"></script>
         <script type="text/javascript" src="scripts/fm.js"></script>
         <!-- endbuild -->
@@ -46,6 +47,7 @@
                             <label for="song-{{$index}}">
                                 {{song.title}} <span style="color: #c9c9c9">by</span> {{song.artist}}
                             </label>
+                            <label ng-show="song.isHightQuality" class="HightQualityIndicator">HQ</label>
                             <br>
                         </div>
                         <div id="moreSongButton" class="interactive" ng-click="getSongs(getCurrentChannel())">More songs</div>
