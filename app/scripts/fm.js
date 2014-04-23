@@ -126,7 +126,7 @@ function fmCtrl($scope) {
                 if (callback) {
                     callback(songs);
                 }
-                console.log("Current Song kbps: " + $scope.getCurrentSong().kbps);
+//                console.log("Current Song kbps: " + $scope.getCurrentSong().kbps);
             });
         });
     };

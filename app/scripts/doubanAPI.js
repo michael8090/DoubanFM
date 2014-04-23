@@ -129,7 +129,7 @@
                 url: url,
                 callback: function (response) {
                     callback(response.song);
-                    var songs = response.song,
+                    var songs = response.song || [],
                         len = songs.length,
                         i;
                     for(i = 0; i < len; i++) {
@@ -149,7 +149,7 @@
                                                 var ta = as[k];
                                                 if (ta.name === song.artist) {
                                                     matchedSong = s;
-                                                    console.log("getcha!");
+//                                                    console.log("getcha!");
                                                     break;
                                                 }
                                             }
@@ -294,7 +294,8 @@
             this.loadUserSession(function () {
                 if (_this.token) {
                     _this.getSongs({channel_id: -3}, function (songs) {
-                        callback(!!songs.length);
+                        var isValid = songs && songs.length > 0;
+                        callback(isValid);
                     });
                 } else {
                     callback(false);
