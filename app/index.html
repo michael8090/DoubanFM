@@ -59,7 +59,7 @@
         </div>
         <div style="display: flex;">
             <div style="flex: 1">
-                <audio id="player" controls autoplay name="media" src={{getCurrentSong().url}}>
+                <audio id="player" controls autoplay preload="none" name="media" src={{getCurrentSong().url}}>
                 </audio>
             </div>
             <div id="controlButtonsContainer" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
