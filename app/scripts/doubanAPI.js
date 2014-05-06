@@ -15,9 +15,12 @@
     //for 163
 //    var SEARCH163 = 'http://music.163.com/api/search/get/web';
     var SEARCH163 = 'http://music.163.com/api/search/suggest/web?csrf_token=';
+    var SEARCH_BASE = 'http://song4u.sinaapp.com/api/search.php';
 //    var SEARCH163 = 'http://music.163.com/api/search/get/';
     var DETAIL163 = 'http://music.163.com/api/song/detail';
     var REFERER163 = 'http://music.163.com';
+
+    var isUsing163 = false;
 
     /*
      类型	需要参数	含义	报告长度
@@ -41,7 +44,7 @@
         UNRATE: 'u'
     };
 
-    function mergeParams (params) {
+    function mergeParams(params) {
         params = params || {};
         var ret = '',
             keys = Object.keys(params),
@@ -124,6 +127,75 @@
             var url = getUrlWidthParams(BASE, params),
                 _this = this;
 
+            var getSearch163Handler = function (song) {
+                    return function (response) {
+                        var j, rsongs = (response.code === 200 && response.result && response.result.songs) || [],
+                            lr = rsongs.length,
+                            matchedSong;
+                        for (j = 0; j < lr && !matchedSong; j++) {
+                            var s = rsongs[j];
+                            if (s) {
+                                if (s.name === song.title && s.artists) {
+                                    var as = s.artists,
+                                        la = as.length,
+                                        k;
+                                    for (k = 0; k < la; k++) {
+                                        var ta = as[k];
+                                        if (ta.name === song.artist) {
+                                            matchedSong = s;
+//                                                    console.log("getcha!");
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (matchedSong) {
+                            _this.sendRequest({
+                                type: 'get',
+                                url: getUrlWidthParams(DETAIL163, {
+                                    ids: '[' + matchedSong.id + ']'
+                                }),
+                                callback: function (response) {
+                                    if (response.code === 200) {
+                                        var hQSong = response.songs && response.songs[0];
+//                                                if (hQSong  && !song.isPlaying) { //don't need to check the isPlaying, as it will not trigger a change in the view
+                                        if (hQSong && hQSong.mp3Url) {
+                                            song.url = hQSong.mp3Url;
+                                            song.isHightQuality = true;
+                                            callback([song]);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    };
+                },
+                getSearchHandler = function (song) {
+                    return function (response) {
+                        var j, rsongs =  response.songs || [],
+                            lr = rsongs.length,
+                            matchedSong;
+                        for (j = 0; j < lr && !matchedSong; j++) {
+                            var s = rsongs[j];
+                            if (s) {
+                                if (s.songName === song.title && s.artistName === song.artist) {
+                                    matchedSong = s;
+                                    break;
+                                }
+                            }
+                        }
+                        if (matchedSong) {
+                            song.url = matchedSong.songLink;
+                            song.isHightQuality = true;
+                            song.rate = matchedSong.rate;
+                            callback([song]);
+                        }
+                    };
+                };
+
+            var getHandler = isUsing163 ? getSearch163Handler : getSearchHandler;
+
             this.sendRequest({
                 type: 'get',
                 url: url,
@@ -132,51 +204,9 @@
                     var songs = response.song || [],
                         len = songs.length,
                         i;
-                    for(i = 0; i < len; i++) {
-                        (function(song) {
-                            _this.search(song, function(response) {
-                                var j, rsongs = response.code === 200 && response.result && response.result.songs || [],
-                                    lr = rsongs.length,
-                                    matchedSong ;
-                                for (j = 0; j < lr && !matchedSong; j++) {
-                                    var s = rsongs[j];
-                                    if (s) {
-                                        if (s.name === song.title && s.artists) {
-                                            var as = s.artists,
-                                                la = as.length,
-                                                k;
-                                            for (k = 0; k < la; k ++){
-                                                var ta = as[k];
-                                                if (ta.name === song.artist) {
-                                                    matchedSong = s;
-//                                                    console.log("getcha!");
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                if (matchedSong) {
-                                    _this.sendRequest({
-                                        type: 'get',
-                                        url: getUrlWidthParams(DETAIL163, {
-                                            ids: '[' + matchedSong.id + ']'
-                                        }),
-                                        callback: function(response) {
-                                            if (response.code === 200) {
-                                                var hQSong = response.songs && response.songs[0];
-//                                                if (hQSong  && !song.isPlaying) { //don't need to check the isPlaying, as it will not trigger a change in the view
-                                                if (hQSong && hQSong.mp3Url) {
-                                                    song.url = hQSong.mp3Url;
-                                                    song.isHightQuality = true;
-                                                    callback([song]);
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        })(songs[i]);
+                    for (i = 0; i < len; i++) {
+                        var song = songs[i];
+                        _this.search(song, getHandler(song));
                     }
                 }
             });
@@ -308,21 +338,31 @@
 //                var header = '';
 //            }, {urls: ['*:music.163.com/*']});
 //            document.cookie = 'appver=1.5.2';
-            this.sendRequest({
-                url: SEARCH163,
-                type: 'POST',
-                'Content-type': "application/x-www-form-urlencoded",
-                data: mergeParams({
-                    type: 1,
-                    s: song.title + ' ' + song.artist,
-                    limit: 20,
-                    offset: 0,
+            if (isUsing163) {
+                this.sendRequest({
+                    url: SEARCH163,
+                    type: 'POST',
+                    'Content-type': "application/x-www-form-urlencoded",
+                    data: mergeParams({
+                        type: 1,
+                        s: song.title + ' ' + song.artist,
+                        limit: 20,
+                        offset: 0,
 //                    csrf_token: '',
-                    hlpretag: '',
-                    hlposttag: ''
-                }),
-                callback: callback
-            })
+                        hlpretag: '',
+                        hlposttag: ''
+                    }),
+                    callback: callback
+                });
+            } else {
+                this.sendRequest({
+                    url: getUrlWidthParams(SEARCH_BASE, {
+                        keyword: song.title + ' ' + song.artist
+                    }),
+                    type: 'GET',
+                    callback: callback
+                });
+            }
         }
     };
 

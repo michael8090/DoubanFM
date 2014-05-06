@@ -5,6 +5,7 @@
         <title>Douban FM</title>
         <!-- build:css styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="styles/bbplayer.css">
         <!-- endbuild -->
 
         <!-- build:js scripts/index.js -->
@@ -46,7 +47,7 @@
                             <label for="song-{{$index}}">
                                 {{song.title}} <span style="color: #c9c9c9">by</span> {{song.artist}}
                             </label>
-                            <label ng-show="song.isHightQuality" class="HightQualityIndicator">HQ</label>
+                            <label ng-show="song.isHightQuality" class="HightQualityIndicator">{{song.rate || 'HQ'}}</label>
                             <br>
                         </div>
                         <div id="moreSongButton" class="interactive" ng-click="getSongs(getCurrentChannel())">More songs</div>
