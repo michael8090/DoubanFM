@@ -10,7 +10,6 @@
 
         <!-- build:js scripts/index.js -->
         <script type="text/javascript" src="scripts/libs/angular.js"></script>
-        <script src="scripts/libs/md5.js"></script>
         <script type="text/javascript" src="scripts/doubanAPI.js"></script>
         <script type="text/javascript" src="scripts/fm.js"></script>
         <!-- endbuild -->
@@ -40,7 +39,7 @@
                         </div>
                     </form>
                 </div>
-                <div style="overflow: auto">
+                <div style="overflow: auto; -webkit-box-flex: 1;">
                     <p>Songs</p>
                     <form>
                         <div ng-repeat="song in songs | filter:searchKey" class="{{isPlaying(song) && 'selected'}}">
@@ -55,13 +54,13 @@
                     </form>
                 </div>
                 <div>
-                    <input type="text" autofocus="true" placeholder="search songs in the list" ng-model="searchKey">
+                    <input type="text" placeholder="search songs in the list" ng-model="searchKey">
                 </div>
             </div>
         </div>
         <div style="display: flex;">
             <div style="flex: 1">
-                <audio id="player" controls autoplay preload="none" name="media" src={{getCurrentSong().url}}>
+                <audio id="player" controls autoplay name="media" src={{getCurrentSong().url}}>
                 </audio>
             </div>
             <div id="controlButtonsContainer" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
