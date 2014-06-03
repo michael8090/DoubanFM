@@ -4,6 +4,10 @@
 	height: 100%;
 }
 
+h1 {
+    font-weight: lighter;
+}
+
 .horizontalLayout {
 	display: -webkit-box;
 	width: 100%;

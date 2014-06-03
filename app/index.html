@@ -65,9 +65,9 @@
             </div>
             <div id="controlButtonsContainer" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
                 <div class="interactive" ng-click="rate()" style="color: {{getCurrentSong().like && '#ff8f73'}}">❤</div>
-                <div class="interactive" ng-click="playLastSong()">Last</div>
-                <div class="interactive" ng-click="skip()">Next</div>
-                <div class="interactive" ng-click="dislike()">Dislike</div>
+                <div class="interactive" ng-click="playLastSong()">&lt;</div>
+                <div class="interactive" ng-click="skip()">&gt;</div>
+                <div class="interactive" ng-click="dislike()">x</div>
             </div>
         </div>
         <div class="login-{{showLoginDialog}}">

@@ -267,6 +267,21 @@ function fmCtrl($scope) {
         $scope.loginError = '';
         $scope.isLoggedIn = false;
         $scope.getChannels();
+    };
+
+    document.body.onkeydown = function (e) {
+        if (e.ctrlKey) {
+            switch (e.keyCode) {
+                case 37: //left
+                    $scope.playLastSong();
+                    break;
+                case 39: //right
+                    $scope.playNextSong();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 
