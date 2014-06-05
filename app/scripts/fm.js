@@ -273,18 +273,20 @@ function fmCtrl($scope) {
         if (e.ctrlKey) {
             switch (e.keyCode) {
                 case 37: //left
-                    $scope.playLastSong();
+                    $scope.$apply(function() {
+                        $scope.playLastSong();
+                    });
                     break;
                 case 39: //right
-                    $scope.playNextSong();
+                    $scope.$apply(function() {
+                        $scope.playNextSong();
+                    });
                     break;
                 default:
                     break;
             }
         }
     }
-
-
 }
 fmCtrl.$inject = ['$scope'];
 var fm = angular.module('fm', []);

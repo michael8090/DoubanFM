@@ -1,7 +1,7 @@
 'use strict';
 
 // Listens for the app launching then creates the window
-chrome.app.runtime.onLaunched.addListener(function() {
+chrome.app.runtime.onLaunched.addListener(function () {
     var width = 800;
     var height = 600;
 
@@ -11,7 +11,29 @@ chrome.app.runtime.onLaunched.addListener(function() {
             width: width,
             height: height,
             left: Math.round((screen.availWidth - width) / 2),
-            top: Math.round((screen.availHeight - height)/2)
+            top: Math.round((screen.availHeight - height) / 2)
         }
     });
+});
+
+chrome.commands.onCommand.addListener(function (command) {
+    var view = chrome.app.window.getAll()[0];
+    if (view) {
+        var window = view.contentWindow,
+            $scope = window.angular.element(window.document).scope();
+        switch (command) {
+            case 'playNextSong':
+                $scope.$apply(function () {
+                    $scope.playNextSong();
+                });
+                break;
+            case 'playLastSong':
+                $scope.$apply(function () {
+                    $scope.playLastSong();
+                });
+                break;
+            default :
+                break;
+        }
+    }
 });
