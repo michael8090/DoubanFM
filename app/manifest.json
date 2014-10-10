@@ -1,7 +1,7 @@
 {
     "name": "__MSG_appName__",
     "description": "__MSG_appDescription__",
-    "version": "32",
+    "version": "34",
     "manifest_version": 2,
     "default_locale": "en",
     "permissions": [
@@ -37,6 +37,24 @@
                 "mac": "Command+Shift+9"
             },
             "description": "Play last song",
+            "global": true
+        },
+        "rate": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+8",
+                "windows": "Ctrl+Shift+8",
+                "mac": "Command+Shift+8"
+            },
+            "description": "Rate or un-rate the song",
+            "global": true
+        },
+        "dislike": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+1",
+                "windows": "Ctrl+Shift+1",
+                "mac": "Command+Shift+1"
+            },
+            "description": "Never play it again",
             "global": true
         }
     }

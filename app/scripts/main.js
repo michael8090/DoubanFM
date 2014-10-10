@@ -22,18 +22,28 @@ chrome.commands.onCommand.addListener(function (command) {
         var window = view.contentWindow,
             $scope = window.angular.element(window.document).scope();
         switch (command) {
-            case 'playNextSong':
-                $scope.$apply(function () {
-                    $scope.playNextSong();
-                });
-                break;
-            case 'playLastSong':
-                $scope.$apply(function () {
-                    $scope.playLastSong();
-                });
-                break;
-            default :
-                break;
+        case 'playNextSong':
+            $scope.$apply(function () {
+                $scope.playNextSong();
+            });
+            break;
+        case 'playLastSong':
+            $scope.$apply(function () {
+                $scope.playLastSong();
+            });
+            break;
+        case 'rate':
+            $scope.$apply(function () {
+                $scope.rate();
+            });
+            break;
+        case 'dislike':
+            $scope.$apply(function () {
+                $scope.dislike();
+            });
+            break;
+        default :
+            break;
         }
     }
 });
