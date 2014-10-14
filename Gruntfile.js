@@ -185,16 +185,16 @@ module.exports = function (grunt) {
             }
         },
 
-//        svgmin: {
-//            dist: {
-//                files: [{
-//                    expand: true,
-//                    cwd: '<%= config.app %>/images',
-//                    src: '{,*/}*.svg',
-//                    dest: '<%= config.dist %>/images'
-//                }]
-//            }
-//        },
+        svgmin: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= config.app %>/images',
+                    src: '{,*/}*.svg',
+                    dest: '<%= config.dist %>/images'
+                }]
+            }
+        },
 
         htmlmin: {
             dist: {
@@ -280,7 +280,7 @@ module.exports = function (grunt) {
             dist: [
                 'copy:styles',
                 'imagemin',
-//                'svgmin'
+                'svgmin'
             ],
             test: [
                 'copy:styles'
