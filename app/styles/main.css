@@ -4,6 +4,10 @@
 	height: 100%;
 }
 
+* {
+    transition: all 0.3s;
+}
+
 h1 {
     font-weight: lighter;
 }

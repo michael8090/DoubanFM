@@ -185,16 +185,16 @@ module.exports = function (grunt) {
             }
         },
 
-        svgmin: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= config.app %>/images',
-                    src: '{,*/}*.svg',
-                    dest: '<%= config.dist %>/images'
-                }]
-            }
-        },
+//        svgmin: {
+//            dist: {
+//                files: [{
+//                    expand: true,
+//                    cwd: '<%= config.app %>/images',
+//                    src: '{,*/}*.svg',
+//                    dest: '<%= config.dist %>/images'
+//                }]
+//            }
+//        },
 
         htmlmin: {
             dist: {
@@ -280,7 +280,7 @@ module.exports = function (grunt) {
             dist: [
                 'copy:styles',
                 'imagemin',
-                'svgmin'
+//                'svgmin'
             ],
             test: [
                 'copy:styles'
@@ -323,13 +323,13 @@ module.exports = function (grunt) {
     grunt.registerTask('debug', function (platform) {
         var watch = grunt.config('watch');
         platform = platform || 'chrome';
-        
+
 
         // Configure style task for debug:server task
         if (platform === 'server') {
             watch.styles.tasks = ['newer:copy:styles'];
             watch.styles.options.livereload = false;
-            
+
         }
 
         // Configure updated watch task
