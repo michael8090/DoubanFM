@@ -14,14 +14,16 @@
         <!-- endbuild -->
     </head>
     <body class="autoSize" style="display: -webkit-box; -webkit-box-orient: vertical;">
-        <div id="menu" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
+        <div id="menu" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;" class="draggable">
             <h1>Douban FM</h1>
-            <div ng-show="!isLoggedIn">
-                <a href="" ng-click="showLoginDialog = 'show';"> Login </a>
-            </div>
-            <div id="userNameZone" ng-show="isLoggedIn">
-                <div>{{userName}}</div>
-                <div id="logoutIndicator" class="interactive" ng-click="logout()">Logout?</div>
+            <div class="clickable">
+                <div ng-show="!isLoggedIn">
+                    <a href="" ng-click="showLoginDialog = 'show';"> Login </a>
+                </div>
+                <div id="userNameZone" ng-show="isLoggedIn">
+                    <div>{{userName}}</div>
+                    <div id="logoutIndicator" class="interactive" ng-click="logout()">Logout?</div>
+                </div>
             </div>
         </div>
         <div style="-webkit-box-flex:1; overflow: auto; -webkit-box-sizing: border-box;">
