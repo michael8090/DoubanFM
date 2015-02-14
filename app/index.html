@@ -43,12 +43,13 @@
                 <div style="overflow: auto; -webkit-box-flex: 1;">
                     <p>Songs</p>
                     <form>
-                        <div ng-repeat="song in songs | filter:searchKey" class="{{isPlaying(song) && 'selected'}}">
+                        <div ng-repeat="song in songs | filter:searchKey" class="{{isPlaying(song) && 'selected'}} song-item">
                             <input ng-show="hidden" type="radio" name="songId" value={{song.sid}} id="song-{{$index}}" ng-model="$parent.currentSongId">
                             <label for="song-{{$index}}">
                                 {{song.title}} <span style="color: #c9c9c9">by</span> {{song.artist}}
                             </label>
                             <label ng-show="song.isHightQuality" class="HightQualityIndicator">{{song.rate || 'HQ'}}</label>
+                            <span class="share-button clickable" ng-click="shareSong($index)">share</span>
                             <br>
                         </div>
                         <div id="moreSongButton" class="interactive" ng-click="getSongs(getCurrentChannel())">More songs</div>

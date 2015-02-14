@@ -163,6 +163,17 @@ function fmCtrl($scope) {
         }
     });
 
+	$scope.shareSong = function (index) {
+		var linkUrl = 'http://service.weibo.com/share/share.php?title={{TITLE}} http://douban.fm/?start={{START_ID}}&pic={{PICTURE}}';
+		var song = $scope.songs[index];
+		if (song) {
+			var url = linkUrl.replace('{{TITLE}}', '分享来自' + song.artist + '的' + song.title)
+				.replace('{{PICTURE}}', song.picture)
+				.replace('{{START_ID}}', song.sid + 'g' + song.ssid + 'g0');
+			window.open(url, '_blank', 'width=800,height=600,location=0');
+		}
+	};
+
     $scope.getChannels(function () {
         $scope.getSongs($scope.getCurrentChannel());
     });
