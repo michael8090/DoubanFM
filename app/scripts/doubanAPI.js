@@ -368,7 +368,19 @@
                 }),
                 callback: getSearch163Handler.call(this, song, callback)
             });
-        }
+        },
+	    getLyric: function (song, callback) {
+		    this.sendRequest({
+			    url: getUrlWidthParams('http://api.douban.com/v2/fm/lyric', {
+				    ssid: song.ssid,
+				    sid: song.sid
+			    }),
+			    type: 'GET',
+			    callback: function (res) {
+				    callback(res.lyric);
+			    }
+		    })
+	    }
     };
 
     mixin(proto, Douban.prototype);

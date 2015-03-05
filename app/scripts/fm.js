@@ -1,4 +1,4 @@
-function fmCtrl($scope) {
+function fmCtrl($scope, $sce) {
     var douban = new Douban(),
         maxSongNumber = 200;
 
@@ -40,6 +40,27 @@ function fmCtrl($scope) {
         }
         $scope.currentSongId = song[SONG_ID_KEY];
         $scope.currentSongIndex = $scope.songs.indexOf(song);
+
+	    douban.getLyric(song, function (lyric) {
+		    $scope.lyrics = lyric.split('\r\n').map(function (line) {
+			    var time = line.match(/\[(.+?):(.+?)\]/),
+				    text = line.match(/[^\[|\]|\d|:|\.](.*)$/);
+			    text = (text && text[1]) || '';
+			    if (time) {
+				    return {
+					    time: parseInt(time[1], 10) * 60 + parseInt(time[2], 10),
+					    text: text
+				    }
+			    } else {
+				    return {
+					    time: null,
+					    text: line
+				    }
+			    }
+		    });
+		    $scope.$digest();
+	    });
+
         var songInputNode = document.getElementById('song-' + $scope.currentSongIndex);
         if (songInputNode) {
             songInputNode.parentNode.scrollIntoViewIfNeeded(true);
@@ -163,14 +184,20 @@ function fmCtrl($scope) {
         }
     });
 
+	$scope.$watch('userName', function (value) {
+		$scope.isHY = value === '暴走小白兔';
+	});
+
 	$scope.shareSong = function (index) {
-		var linkUrl = 'http://service.weibo.com/share/share.php?title={{TITLE}} http://douban.fm/?start={{START_ID}}&pic={{PICTURE}}';
-		var song = $scope.songs[index];
+		var baseUrl = 'http://service.weibo.com/share/share.php?',
+			params = 'title={{TITLE}} http://douban.fm/?start={{START_ID}}&pic={{PICTURE}}',
+			song = $scope.songs[index];
 		if (song) {
-			var url = linkUrl.replace('{{TITLE}}', '分享来自' + song.artist + '的' + song.title)
-				.replace('{{PICTURE}}', song.picture)
-				.replace('{{START_ID}}', song.sid + 'g' + song.ssid + 'g0');
-			window.open(url, '_blank', 'width=800,height=600,location=0');
+			params = params.replace('{{TITLE}}', encodeURIComponent('分享 ' + song.artist + ' 的单曲《' +
+				song.title + '》来自豆瓣FM-#' + $scope.getCurrentChannel().name + '#'))
+				.replace('{{PICTURE}}', encodeURIComponent(song.picture))
+				.replace('{{START_ID}}', encodeURIComponent(song.sid + 'g' + song.ssid + 'g0'));
+			window.open(baseUrl + params, '_blank', 'width=800,height=600,location=0');
 		}
 	};
 
@@ -250,6 +277,28 @@ function fmCtrl($scope) {
         });
     }
 
+	var activeLine;
+	setInterval(function () {
+		var time = parseInt($scope.player.currentTime, 10),
+			lyricLine = document.getElementById('lyric-' + time);
+		if (lyricLine) {
+			if (activeLine) {
+				activeLine.className = activeLine.className.replace('selected', '');
+			}
+			activeLine = lyricLine;
+			activeLine.className = activeLine.className + ' selected';
+			lyricLine.scrollIntoViewIfNeeded(true);
+		}
+		$scope.$digest();
+
+	}, 200);
+
+	$scope.toTrust = function (value) {
+		return $sce.trustAsResourceUrl(value);
+	};
+
+
+
     $scope.login = function () {
         var info = {
             username: $scope.username,
@@ -299,7 +348,7 @@ function fmCtrl($scope) {
         }
     };
 }
-fmCtrl.$inject = ['$scope'];
+fmCtrl.$inject = ['$scope', '$sce'];
 var fm = angular.module('fm', [])
 //    .run(function ($scope, $anchorScroll, $location) {
 //        $anchorScroll.yOffset = '50%';

@@ -4,11 +4,12 @@
         <meta charset="utf-8">
         <title>Douban FM</title>
         <!-- build:css styles/main.css -->
+        <link rel="stylesheet" href="scripts/libs/angular/angular-csp.css">
         <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
 
         <!-- build:js scripts/index.js -->
-        <script type="text/javascript" src="scripts/libs/angular.js"></script>
+        <script type="text/javascript" src="scripts/libs/angular/angular.js"></script>
         <script type="text/javascript" src="scripts/doubanAPI.js"></script>
         <script type="text/javascript" src="scripts/fm.js"></script>
         <!-- endbuild -->
@@ -21,18 +22,18 @@
                     <a href="" ng-click="showLoginDialog = 'show';"> Login </a>
                 </div>
                 <div id="userNameZone" ng-show="isLoggedIn">
-                    <div>{{userName}}</div>
+                    <div><span ng-show="isHY" style="color: #ff8f73">❤</span>{{userName}}</div>
                     <div id="logoutIndicator" class="interactive" ng-click="logout()">Logout?</div>
                 </div>
             </div>
         </div>
         <div style="-webkit-box-flex:1; overflow: auto; -webkit-box-sizing: border-box;">
             <div style="display: -webkit-box; height: 100%; width: 100%; -webkit-box-sizing: border-box;">
-                <div style="overflow: auto;">
+                <div>
                     <p>Channels</p>
                     <form>
                         <div ng-repeat="channel in channels" class="{{isPlaying(channel) && 'selected'}}">
-                            <input ng-show="hidden" type="radio" name="channelId" value={{channel.channel_id}} id="channel-{{$index}}" ng-model="$parent.currentChannelId">
+                            <input ng-show="false" type="radio" name="channelId" value={{channel.channel_id}} id="channel-{{$index}}" ng-model="$parent.currentChannelId">
                             <label for="channel-{{$index}}">
                                 {{channel.name}}
                             </label>
@@ -40,16 +41,16 @@
                         </div>
                     </form>
                 </div>
-                <div style="overflow: auto; -webkit-box-flex: 1;">
+                <div style="-webkit-box-flex: 1;">
                     <p>Songs</p>
                     <form>
                         <div ng-repeat="song in songs | filter:searchKey" class="{{isPlaying(song) && 'selected'}} song-item">
-                            <input ng-show="hidden" type="radio" name="songId" value={{song.sid}} id="song-{{$index}}" ng-model="$parent.currentSongId">
+                            <input ng-show="false" type="radio" name="songId" value={{song.sid}} id="song-{{$index}}" ng-model="$parent.currentSongId">
                             <label for="song-{{$index}}">
                                 {{song.title}} <span style="color: #c9c9c9">by</span> {{song.artist}}
                             </label>
                             <label ng-show="song.isHightQuality" class="HightQualityIndicator">{{song.rate || 'HQ'}}</label>
-                            <span class="share-button clickable" ng-click="shareSong($index)">share</span>
+                            <span class="share-button interactive" ng-click="shareSong($index)">share</span>
                             <br>
                         </div>
                         <div id="moreSongButton" class="interactive" ng-click="getSongs(getCurrentChannel())">More songs</div>
@@ -57,12 +58,15 @@
                 </div>
                 <div>
                     <input type="text" placeholder="search songs in the list" ng-model="searchKey">
+                    <div style="height: 100%; overflow: auto">
+                        <div ng-repeat="line in lyrics" id="lyric-{{line.time}}" class="lyric-line">{{line.text}}</div>
+                    </div>
                 </div>
             </div>
         </div>
         <div style="display: flex;">
             <div style="flex: 1">
-                <audio id="player" controls autoplay name="media" src={{getCurrentSong().url}}>
+                <audio id="player" controls autoplay name="media" src={{toTrust(getCurrentSong().url)}}>
                 </audio>
             </div>
             <div id="controlButtonsContainer" style="display: -webkit-box; -webkit-box-align: center; -webkit-box-pack: justify;">
