@@ -33,7 +33,7 @@ module.exports = function (grunt) {
         watch: {
             bower: {
                 files: ['bower.json'],
-                tasks: ['bowerInstall']
+                tasks: ['injector']
             },
             js: {
                 files: ['<%= config.app %>/scripts/{,*/}*.js'],
@@ -145,12 +145,26 @@ module.exports = function (grunt) {
         },
 
         // Automatically inject Bower components into the HTML file
-        bowerInstall: {
-            app: {
-                src: ['<%= config.app %>/index.html'],
-                ignorePath: '<%= config.app %>/'
-            }
-        },
+        //wiredep: {
+        //    app: {
+        //        src: [
+	     //           '<%= config.app %>/index.html'
+        //        ],
+        //        ignorePath: '<%= config.app %>/'
+        //    }
+        //},
+
+	    injector: {
+		    bower_dependencies: {
+			    options: {
+				    ignorePath: '<%= config.app %>/',
+				    addRootSlash: false
+			    },
+			    files: {
+				    '<%= config.app %>/index.html': ['bower.json', '<%= config.app %>/scripts/libs/**/*.css']
+			    }
+		    }
+	    },
 
         // Reads HTML for usemin blocks to enable smart builds that automatically
         // concat, minify and revision files. Creates configurations in memory so
