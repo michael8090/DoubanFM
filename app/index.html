@@ -68,10 +68,14 @@
                         <div id="moreSongButton" class="interactive" ng-click="getSongs(getCurrentChannel())">More songs</div>
                     </form>
                 </div>
-                <div>
-                    <input type="text" placeholder="search songs in the list" ng-model="searchKey">
-                    <div style="height: 100%; overflow: auto">
-                        <div ng-repeat="line in lyrics" id="lyric-{{line.time}}" class="lyric-line">{{line.text}}</div>
+                <div style="width: 310px;">
+                    <input type="text" placeholder="search songs in the list" ng-model="searchKey" style="float: right">
+                    <div class="song-cover" style="background-image: url({{getCurrentSong().$cover}})" ng-class="{'has-lyric': vm.showLyric && !!lyrics.length}">
+                    </div>
+                    <div class="lyric-gallery" ng-click="vm.showLyric = !vm.showLyric">
+                        <div ng-show="vm.showLyric && !!lyrics.length">
+                            <div ng-repeat="line in lyrics" id="lyric-{{line.time}}" class="lyric-line">{{line.text}}</div>
+                        </div>
                     </div>
                 </div>
             </div>

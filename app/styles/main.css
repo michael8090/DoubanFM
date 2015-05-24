@@ -1,7 +1,7 @@
 .autoSize {
-	position: relative;
-	width: 100%;
-	height: 100%;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 * {
@@ -14,38 +14,38 @@ h1 {
 }
 
 .horizontalLayout {
-	display: -webkit-box;
-	width: 100%;
-	height: 100%;
-	overflow: auto;
+    display: -webkit-box;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
 }
 
 body {
-	padding: 8px;
-	margin: 0px;
-	-webkit-box-sizing: border-box;
+    padding: 8px;
+    margin: 0px;
+    -webkit-box-sizing: border-box;
     box-shadow: inset 0 0 5px 0 #f0f0f0;
 }
 
 footer {
-	position: fixed;
-	bottom: 0px;
-	left: 0px;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
 }
 
 .login-hide {
-	display: none;
+    display: none;
 }
 
 .login-show {
-	display: -webkit-box;
-	-webkit-box-pack: center;
-	-webkit-box-align: center;
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	left: 0px;
-	top: 0px;
+    display: -webkit-box;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
 }
 
 .display-hide {
@@ -119,7 +119,7 @@ input[type="range"]::-webkit-media-slider-container {
     cursor: pointer;
 }
 
-.interactive:hover{
+.interactive:hover {
     text-shadow: 0px 0px 1px gray;
 }
 
@@ -135,7 +135,7 @@ label {
     transform: scale(1.1, 1.1);
 }
 
-.selected label{
+.selected label {
     color: black;
     text-shadow: 0 0 1px #8d8d8d;
 }
@@ -157,17 +157,19 @@ label {
 ::-webkit-scrollbar {
     width: 7px;
 }
+
 ::-webkit-scrollbar-thumb {
     background-color: #ddd;
     border-radius: 1px
 }
+
 ::-webkit-scrollbar-thumb:hover {
     background-color: #bbb;
 }
 
 input {
     margin: 5px;
-    border-radius : 1px;
+    border-radius: 1px;
     border: solid 1px #dcdcdc;
     transition: box-shadow .3s, border .3s;
     outline: 0
@@ -181,6 +183,7 @@ input:focus {
 .draggable {
     -webkit-app-region: drag;
 }
+
 .clickable {
     -webkit-app-region: no-drag;
 }
@@ -201,10 +204,41 @@ input:focus {
 }
 
 .lyric-line {
-    color: #333;
+    color: #a0a0a0;
+    transform-origin: 50% 50%;
 }
 
 .lyric-line.selected {
     color: black;
     text-shadow: 0 0 1px #8d8d8d;
+}
+
+.lyric-gallery {
+    line-height: 1.5;
+    height: 300px;
+    width: 300px;
+    box-shadow: 0 0 5px 0 #cccccc;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translate(0, -50%);
+    overflow: hidden;
+    text-align: center;
+}
+
+.song-cover {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translate(0, -50%);
+    height: 300px;
+    width: 300px;
+}
+
+.song-cover.has-lyric {
+    opacity: 0.08;
+    -webkit-filter: blur(1px);
 }
